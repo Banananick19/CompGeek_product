@@ -1,0 +1,14 @@
+{% extends 'layout/base.html' %}
+
+{% load bootstrap4 %}
+{% load static %}
+
+{% block content %}
+    {{ form.media }}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Написать">
+    </form>
+
+{% endblock %}

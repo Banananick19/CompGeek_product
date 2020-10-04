@@ -1,20 +1,58 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-
+from django.db.models import Q
 
 from .forms import *
+from .models import *
+from .utilities import get_pag
 
 
 def index(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    return redirect('login')
+    object_list = Article.objects.all()
+    page = request.GET.get('page')
+    context = get_pag(object_list, 10, page)
+    return render(request, 'main/articles.html', context)
+
+
+class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    model = User
+    template_name = 'main/change_user_info.html'
+    form_class = ChangeUserInfoForm
+    success_url = reverse_lazy('home')
+    success_message = 'Личные данные пользователя изменены'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user_id = request.user.pk
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset, pk=self.user_id)
+
+
+def article(request, tag):
+    try:
+        article = Article.objects.get(tag=tag)
+    except:
+        messages.error(request, 'Мы не нашли эту статью')
+        return redirect(request.META.get('HTTP_REFERER'))
+    context = {
+        'article': article
+    }
+    return render(request, 'main/article.html', context)
+
 
 def home(request):
     if not request.user.is_authenticated:
         return redirect('login')
     return render(request, 'main/home.html', {})
+
 
 def loginer(request):
     if request.user.is_authenticated:
@@ -59,6 +97,7 @@ def logouter(request):
         messages.error(request, 'Как вы собирались выходить? Вы даже не вошли -_-')
         return redirect('login')
 
+
 def sing_up(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -97,3 +136,56 @@ def sing_up(request):
             'form': RegisterUserForm()
         }
         return render(request, 'main/sing_up.html', context)
+
+
+def articles_by(request):
+    parent_rubric = request.GET.get('parent_rubric')
+    sub_rubric = request.GET.get('sub_rubric')
+    pattern = request.GET.get('pattern')
+    articles = []
+
+    if parent_rubric:
+        articles = Article.objects.filter(primary_category=parent_rubric)
+    if sub_rubric:
+        if articles != []:
+            articles = articles.filter(secondary_category=sub_rubric)
+        else:
+            articles = Article.objects.filter(secondary_category=sub_rubric)
+    if pattern:
+        if articles != []:
+            articles = articles.filter(
+                Q(text__icontains=pattern) | Q(label__icontains=pattern) | Q(tag__icontains=pattern))
+        else:
+            articles = Article.objects.filter(
+                Q(text__icontains=pattern) | Q(label__icontains=pattern) | Q(tag__icontains=pattern))
+
+    if articles != []:
+        articles = articles.values('tag', 'label')
+    page = request.GET.get('page')
+    context = get_pag(articles, 10, page)
+    return render(request, 'main/articles.html', context)
+
+
+def write_article(request):
+    if not request.user.is_authenticated:
+        messages.error('Вы не зашли в аккаунт')
+        return redirect('login')
+    if request.method == 'POST':
+        form = ArticleWriteForm(request.POST)
+        form.author = request.user
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Вы успешно создали статью')
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            context = {
+                'form': form
+            }
+            messages.error(request, 'Поля заполенены неверно')
+            return render(request, 'main/writearticle.html', context)
+    if request.method == 'GET':
+        form = ArticleWriteForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'main/writearticle.html', context)

@@ -1,9 +1,60 @@
 from django import forms
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
-
+from CompGeek.settings import STATIC_URL
 from .models import *
+from .utilities import transliterate
 
+
+
+class ArticleWriteWidget(forms.TextInput):
+
+
+    class Media:
+        js = ("https://cdn.tiny.cloud/1/fz2mhs07b3qgkc5uyvxi3oskmyjkfqv7iteam2qivgn106v5/tinymce/5/tinymce.min.js",
+              STATIC_URL + 'js/tiny_init.js?ver=1.2',)
+
+class ArticleWriteForm(forms.ModelForm):
+    text = forms.CharField(widget=ArticleWriteWidget(attrs={'id': 'article_text'}), required=False)
+
+    def clean(self):
+        super().clean()
+        text = self.cleaned_data['text']
+        if len(text) == 0:
+            errors = {'text': ValidationError(
+                'поле обязательно к заполенению',
+                )}
+            raise ValidationError(errors)
+
+    def save(self, commit=True):
+        article = super().save(commit=False)
+        article.tag = transliterate(article.label)
+        article.save()
+
+    class Meta:
+        model = Article
+        fields = ['label', 'text', 'primary_category', 'secondary_category']
+
+class ArticleAdminWriteForm(forms.ModelForm):
+    text = forms.CharField(widget=ArticleWriteWidget(attrs={'id': 'article_text'}))
+
+    def save(self, commit=True):
+        article = super().save(commit=False)
+        article.tag = transliterate(article.label)
+        if commit:
+            article.save()
+        return article
+
+    class Meta:
+        model = Article
+        fields = ['label', 'tag', 'text', 'primary_category', 'secondary_category', 'author']
+
+class ChangeUserInfoForm(forms.ModelForm):
+	email = forms.EmailField(required=True, label='Адрес элетронной почты')
+
+	class Meta:
+		model = User
+		fields = ['username', 'email', 'first_name', 'last_name' ]
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -42,3 +93,4 @@ class RegisterUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
