@@ -9,13 +9,13 @@ from django.db.models import Q
 
 from .forms import *
 from .models import *
-from .utilities import get_pag
+from .utilities import get_pag, counted
 
 
 def index(request):
-    object_list = Article.objects.all()
+    articles = Article.objects.all()
     page = request.GET.get('page')
-    context = get_pag(object_list, 10, page)
+    context = get_pag(articles, 1, page)
     return render(request, 'main/articles.html', context)
 
 
@@ -35,13 +35,13 @@ class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
             queryset = self.get_queryset()
         return get_object_or_404(queryset, pk=self.user_id)
 
-
+@counted
 def article(request, tag):
     try:
         article = Article.objects.get(tag=tag)
     except:
         messages.error(request, 'Мы не нашли эту статью')
-        return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'main/404.html', {})
     context = {
         'article': article
     }
@@ -139,8 +139,8 @@ def sing_up(request):
 
 
 def articles_by(request):
-    parent_rubric = request.GET.get('parent_rubric')
-    sub_rubric = request.GET.get('sub_rubric')
+    parent_rubric = request.GET.get('parent_category')
+    sub_rubric = request.GET.get('sub_caregory')
     pattern = request.GET.get('pattern')
     articles = []
 
@@ -159,11 +159,55 @@ def articles_by(request):
             articles = Article.objects.filter(
                 Q(text__icontains=pattern) | Q(label__icontains=pattern) | Q(tag__icontains=pattern))
 
-    if articles != []:
+    if articles:
         articles = articles.values('tag', 'label')
-    page = request.GET.get('page')
-    context = get_pag(articles, 10, page)
-    return render(request, 'main/articles.html', context)
+        page = request.GET.get('page')
+        context = get_pag(articles, 10, page)
+        return render(request, 'main/articles.html', context)
+    else:
+        context = {
+            'articles': []
+        }
+        return render(request, 'main/articles.html', context)
+
+def articles_by_category(request, category_slug):
+    try:
+        category = PrimaryCategory.objects.get(slug=category_slug)
+    except:
+        response = render(request, 'main/404.html')
+        response.status_code = 404
+        return response
+    articles = Article.objects.filter(primary_category=category)
+    if articles:
+        articles = articles.values('tag', 'label')
+        page = request.GET.get('page')
+        context = get_pag(articles, 10, page)
+        return render(request, 'main/articles.html', context)
+    else:
+        context = {
+            'articles': []
+        }
+        return render(request, 'main/articles.html', context)
+
+def articles_by_categories(request, category_slug, secondary_category_slug):
+    try:
+        category = PrimaryCategory.objects.get(slug=category_slug)
+        secondary_category = SecondaryCategory.objects.get(slug=secondary_category_slug)
+    except:
+        response = render(request, 'main/404.html')
+        response.status_code = 404
+        return response
+    articles = Article.objects.filter(primary_category=category, secondary_category=secondary_category)
+    if articles:
+        articles = articles.values('tag', 'label')
+        page = request.GET.get('page')
+        context = get_pag(articles, 10, page)
+        return render(request, 'main/articles.html', context)
+    else:
+        context = {
+            'articles': []
+        }
+        return render(request, 'main/articles.html', context)
 
 
 def write_article(request):
@@ -189,3 +233,9 @@ def write_article(request):
             'form': form
         }
         return render(request, 'main/writearticle.html', context)
+
+
+#erros handelrs
+
+def error_404(request, exception):
+   return render(request, 'main/404.html', {})

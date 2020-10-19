@@ -11,5 +11,7 @@ urlpatterns = [
     path('article/<str:tag>/', article, name='article'),
     path('home/change/', ChangeUserInfoView.as_view(), name='home_change'),
     path('articles', articles_by, name='articles'),
-    path('writearticle/', write_article, name='write_article')
+    path('writearticle/', write_article, name='write_article'),
+    path('articles/<str:category_slug>/', articles_by_category, name='articles_by_category'),
+    path('articles/<str:category_slug>/<str:secondary_category_slug>', articles_by_categories, name='articles_by_categories'),
 ]

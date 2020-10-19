@@ -25,8 +25,7 @@ SECRET_KEY = 'om&3sp!=8k*uf)f-y-$ei#fb6%n#cw))vbc0nj+1)jd9*g%na#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost']
 
 # Application definition
 
@@ -64,6 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.middlewares.context_processor'
             ],
         },
     },
@@ -108,7 +108,7 @@ AUTH_USER_MODEL = 'main.User'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -125,3 +125,5 @@ STATIC_URL = '/static/'
 #MEDIA
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+DEFAULT_ARTICLE_AVATAR = 'img/article_avatars/default.png'

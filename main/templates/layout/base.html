@@ -1,5 +1,6 @@
 {% load bootstrap4 %}
 {% load static %}
+{% load custom_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,11 +9,61 @@
     <title>{% block title %}{% endblock %}</title>
     {% bootstrap_css %}
     {% bootstrap_javascript jquery='full' %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?ver={% now '%f' %}">
 </head>
 <body>
     {% bootstrap_messages %}
+    <div class="header p-3">
+        <img src="{% static 'img/site/logo.png' %}" alt="" class="logo">
 
-    {% block content %}{% endblock %}
+        <nav class="navigation d-inline-block">
+            {% for category in primary_categories %}
+                <div class="btn-group">
+                    <a href="{% url 'articles_by_category' category.slug %}" class="btn btn-secondary">{{ category.label }}</a>
+                    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        {% for sec_category in secondary_categories %}
+                        <a href="{% url 'articles_by_categories' category.slug sec_category.slug %}" class="dropdown-item">{{ sec_category.label }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </nav>
+
+        {%  if user.is_authenticated %}
+            <div class="user-menu">
+                <ul class="col nav justify-content-end">
+				<li class="nav-item dropdow">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>
+						{{ user.username }}
+                        {% if user.avatar %}
+						    <img src="{{ user.avatar.url }}" alt="" class="user-avatar rounded-circle" width="40" height="40">
+                        {% else %}
+                            <img src="{{ user.email|gravatar_url:40 }}" height="40" width="40" class="rounded-circle">
+                        {% endif %}
+					</a>
+
+					<div class="dropdown-menu">
+						<a href="{% url 'home' %}" class="dropdown-item">{{ user.username }}</a>
+						<a href="{% url 'home_change' %}" class="dropdown-item">Редактировать</a>
+						<div class="dropdown-divider"></div>
+						<a href="{% url 'logout' %}" class="dropdown-item badge-danger">Выйти</a>
+
+                    </div>
+				</li>
+			</ul>
+            </div>
+        {% else %}
+            <div class="sing">
+                <span class="sing-in"><a href="{% url 'login' %}" class="link">Войти</a></span>
+                <span class="sing-up"><a href="{% url 'sing_up' %}" class="link">Зарегистрироваться</a></span>
+            </div>
+        {% endif %}
+    </div>
+    <div class="site-content">
+        {% block content %}{% endblock %}
+    </div>
 </body>
 </html>

@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
-from CompGeek.settings import STATIC_URL
+from CompGeek.settings import STATIC_URL, DEFAULT_ARTICLE_AVATAR
 from .models import *
-from .utilities import transliterate
+from .utilities import *
 
 
 
@@ -29,36 +29,50 @@ class ArticleWriteForm(forms.ModelForm):
     def save(self, commit=True):
         article = super().save(commit=False)
         article.tag = transliterate(article.label)
+        if not article.avatar.name:
+            article.avatar.name = DEFAULT_ARTICLE_AVATAR
+        if not commit:
+            return article
         article.save()
+
+
 
     class Meta:
         model = Article
-        fields = ['label', 'text', 'primary_category', 'secondary_category']
+        fields = ['label', 'avatar', 'text', 'preview_text', 'primary_category', 'secondary_category']
 
 class ArticleAdminWriteForm(forms.ModelForm):
     text = forms.CharField(widget=ArticleWriteWidget(attrs={'id': 'article_text'}))
 
+
     def save(self, commit=True):
         article = super().save(commit=False)
         article.tag = transliterate(article.label)
-        if commit:
-            article.save()
-        return article
+        if not article.avatar.name:
+            article.avatar.name = DEFAULT_ARTICLE_AVATAR
+        if not commit:
+            return article
+        article.save()
+
 
     class Meta:
         model = Article
-        fields = ['label', 'tag', 'text', 'primary_category', 'secondary_category', 'author']
+        fields = ['label', 'tag', 'avatar', 'text', 'preview_text', 'primary_category', 'secondary_category', 'author']
+
 
 class ChangeUserInfoForm(forms.ModelForm):
 	email = forms.EmailField(required=True, label='Адрес элетронной почты')
 
 	class Meta:
 		model = User
-		fields = ['username', 'email', 'first_name', 'last_name' ]
+		fields = ['username', 'avatar', 'email']
 
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
+
+class CommentForm(forms.Form):
+    text = forms.CharField(widget=ArticleWriteWidget(attrs={'id': 'comment_text'}))
 
 
 class RegisterUserForm(forms.ModelForm):
@@ -92,5 +106,5 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'avatar', 'email']
 

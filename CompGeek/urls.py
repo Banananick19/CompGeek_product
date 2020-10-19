@@ -4,12 +4,15 @@ from django.conf import settings
 from django.contrib.staticfiles.views import serve
 from django.views.decorators.cache import never_cache
 from django.conf.urls.static import static
+from main.views import error_404
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
 ]
+
+handler404 = error_404
 
 
 if settings.DEBUG:

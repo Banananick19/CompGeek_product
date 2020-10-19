@@ -1,4 +1,23 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from functools import wraps
+from django.db.models import F
+from django.db import transaction
+from .models import Article
+
+
+
+def counted(f):
+    @wraps(f)
+    def decorator(request, *args, **kwargs):
+        with transaction.atomic():
+            try:
+                article = Article.objects.get(tag=kwargs['tag'])
+            except:
+                return
+            article.count = F('count') + 1
+            article.save()
+        return f(request, *args, **kwargs)
+    return decorator
 
 def transliterate(string):
     # Слоаврь с заменами
@@ -23,7 +42,6 @@ def transliterate(string):
 
 def get_pag(object_list, n, page):
     paginator = Paginator(object_list, n)
-    page = page
     try:
         object_list = paginator.page(page).object_list
         page = paginator.page(page)

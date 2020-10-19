@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>{{ article.label }}</h1>
+    <city class="views">Просмотров: {{ article.count }}</city>
     {% autoescape off %}
         <div>{{ article.text }}</div>
     {% endautoescape %}

@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box; }
+
+.header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between; }
+
+.site-content {
+  max-width: 1280px;
+  margin: 10px auto; }
+
+.preview-content .article-img {
+  width: 100px;
+  height: 100px;
+  transition: 0.3s;
+  border: 10px solid #f00; }
+  .preview-content .article-img:hover {
+    border: 0px solid #f00; }
+
+/*# sourceMappingURL=style.css.map */

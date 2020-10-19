@@ -12,4 +12,5 @@ for model in MODELS_FOR_ADMIN:
 
 @admin.register(Article)
 class PersonAdmin(admin.ModelAdmin):
+    readonly_fields = ['date']
     form = ArticleAdminWriteForm
