@@ -1,9 +1,43 @@
 {% extends 'layout/base.html' %}
 
+
+{% load bootstrap4 %}
+{% load custom_tags %}
+
 {% block content %}
     <h1>{{ article.label }}</h1>
     <city class="views">Просмотров: {{ article.count }}</city>
     {% autoescape off %}
         <div>{{ article.text }}</div>
     {% endautoescape %}
+
+    <div class="comments">
+        {% if user.is_authenticated %}
+            <div class="comment-form">
+                 <form method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% bootstrap_button button_type='submit' content='Отправить' %}
+                </form>
+            </div>
+        {% else %}
+            <p class="attention">Если вы хотите комментировать, вам необходимо зарегистрироваться.</p>
+        {% endif %}
+        <div class="comments-list">
+            {% for comment in object_list %}
+                <div class="comment">
+                    <h2 class="commenter-name">{{ comment.author.username }}</h2>
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="" class="user-avatar rounded-circle" width="40" height="40">
+                    {% else %}
+                        <img src="{{ user.email|gravatar_url:40 }}" height="40" width="40" class="rounded-circle">
+                    {% endif %}
+                    <p class="comment-text">{{ comment.text }}</p>
+                </div>
+            {% endfor %}
+            <div class="pagination mt-4">
+                {% bootstrap_pagination page %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

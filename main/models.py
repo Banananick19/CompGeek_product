@@ -62,6 +62,7 @@ class Article(models.Model):
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, blank=True, null=True)
     text = models.CharField(max_length=500)
 
     class Meta:
@@ -69,4 +70,4 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
         ordering = ['-date']
 
-MODELS_FOR_ADMIN = [User, PrimaryCategory, SecondaryCategory, Article]
+MODELS_FOR_ADMIN = [User, PrimaryCategory, SecondaryCategory, Article, Comment]

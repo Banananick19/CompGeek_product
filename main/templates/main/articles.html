@@ -4,21 +4,23 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<div class="articles-list ">
-        {% for article in object_list %}
-            <div class="article_preview">
-                <h2 class="article-title"><a href="{% url 'article' article.tag %}" class="link">{{ article.label }}</a></h2>
-                <span class="views-container my-1 d-inline-block">Просмотров: <city class="views">{{ article.count }}</city></span>
-                <div class="preview-content">
-                    <a href="{% url 'article' article.tag %}" class="img-link"><img src="{{ article.avatar.url }}" alt="" class="article-img d-inline-block"></a>
-                    <p class="article-text d-inline-block">
-                        {{ article.preview_text }}
-                    </p>
+    {% if object_list %}
+        <div class="articles-list ">
+                {% for article in object_list %}
+                    <div class="article_preview">
+                        <h2 class="article-title"><a href="{% url 'article' article.tag %}" class="link">{{ article.label }}</a></h2>
+                        <span class="views-container my-1 d-inline-block">Просмотров: <city class="views">{{ article.count }}</city></span>
+                        <div class="preview-content">
+                            <a href="{% url 'article' article.tag %}" class="img-link"><img src="{{ article.avatar.url }}" alt="" class="article-img d-inline-block"></a>
+                            <p class="article-text d-inline-block">
+                                {{ article.preview_text }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="pagination mt-4">
+                    {% bootstrap_pagination page %}
                 </div>
-            </div>
-        {% endfor %}
-        <div class="pagination mt-4">
-            {% bootstrap_pagination page %}
         </div>
-</div>
+    {% endif %}
 {% endblock %}

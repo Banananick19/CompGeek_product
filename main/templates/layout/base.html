@@ -35,8 +35,8 @@
         {%  if user.is_authenticated %}
             <div class="user-menu">
                 <ul class="col nav justify-content-end">
-				<li class="nav-item dropdow">
-					<a href="#" class="nav-link dropdown-toggle" data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>
+				<li class="nav-item dropdown">
+					<a href="{% url 'home' %}" class="nav-link dropdown-toggle" data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>
 						{{ user.username }}
                         {% if user.avatar %}
 						    <img src="{{ user.avatar.url }}" alt="" class="user-avatar rounded-circle" width="40" height="40">

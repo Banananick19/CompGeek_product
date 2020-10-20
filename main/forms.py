@@ -71,8 +71,12 @@ class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
 
-class CommentForm(forms.Form):
+class CommentForm(forms.ModelForm):
     text = forms.CharField(widget=ArticleWriteWidget(attrs={'id': 'comment_text'}))
+
+    class Meta:
+        model = Comment
+        fields = ['text']
 
 
 class RegisterUserForm(forms.ModelForm):

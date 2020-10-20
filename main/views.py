@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 
+import datetime
+
 from .forms import *
 from .models import *
 from .utilities import get_pag, counted
@@ -42,9 +44,21 @@ def article(request, tag):
     except:
         messages.error(request, 'Мы не нашли эту статью')
         return render(request, 'main/404.html', {})
-    context = {
-        'article': article
-    }
+    comments = Comment.objects.all()
+    page = request.GET.get('page')
+    context = get_pag(comments, 10, page)
+    context.update({
+        'article': article,
+        'form': CommentForm()
+    })
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.author = request.user
+                comment.save()
+                return render(request, 'main/article.html', context)
     return render(request, 'main/article.html', context)
 
 
@@ -179,7 +193,6 @@ def articles_by_category(request, category_slug):
         return response
     articles = Article.objects.filter(primary_category=category)
     if articles:
-        articles = articles.values('tag', 'label')
         page = request.GET.get('page')
         context = get_pag(articles, 10, page)
         return render(request, 'main/articles.html', context)
@@ -199,7 +212,6 @@ def articles_by_categories(request, category_slug, secondary_category_slug):
         return response
     articles = Article.objects.filter(primary_category=category, secondary_category=secondary_category)
     if articles:
-        articles = articles.values('tag', 'label')
         page = request.GET.get('page')
         context = get_pag(articles, 10, page)
         return render(request, 'main/articles.html', context)
@@ -209,6 +221,26 @@ def articles_by_categories(request, category_slug, secondary_category_slug):
         }
         return render(request, 'main/articles.html', context)
 
+def articles_by_time(request, time):
+    if not time in ['week', 'month']:
+        messages.warning(request, 'Неверное значение даты')
+        return redirect(request.META.get('HTTP_REFERER'))
+    today = datetime.date.today()
+    articles = False
+    if time == 'week':
+        articles = Article.objects.filter(date__lte=today, date__gte=today-datetime.timedelta(days=7))
+    if time == 'month':
+        articles = Article.objects.filter(date__lte=today, date__gte=today-datetime.timedelta(days=30))
+    if articles:
+        articles.order_by('-count')
+        page = request.GET.get('page')
+        context = get_pag(articles, 10, page)
+        return render(request, 'main/articles.html', context)
+    else:
+        context = {
+            'object_list': articles
+        }
+        return render(request, 'main/articles.html', context)
 
 def write_article(request):
     if not request.user.is_authenticated:
