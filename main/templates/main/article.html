@@ -7,6 +7,12 @@
 
 {% block content %}
     <h1>{{ article.label }}</h1>
+    <a href="{% url 'profile' article.author %}">
+    {% if article.author.avatar %}
+        <img src="{{ article.author.avatar.url }}" alt="" class="user-avatar rounded-circle  d-inline-block" width="40" height="40">
+    {% else %}
+        <img src="{{ article.author.email|gravatar_url:40 }}" height="40" width="40" class="rounded-circle d-inline-block">
+    {% endif %} <span >{{ article.author.username }}</span></a><br>
     <city class="views">Просмотров: {{ article.views }}</city>
     {% autoescape off %}
         <div>{{ article.text }}</div>
