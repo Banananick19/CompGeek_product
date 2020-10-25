@@ -1,0 +1,33 @@
+{% extends 'layout/base.html' %}
+
+{% load custom_tags %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h1 class="d-inline-block">{{ profile_user.username }}</h1>
+    {% if profile_user.avatar %}
+        <img src="{{ profile_user.avatar.url }}" alt="" class="profile_user-avatar rounded-circle" width="40" height="40">
+    {% else %}
+        <img src="{{ profile_user.email|gravatar_url:40 }}" height="40" width="40" class="rounded-circle">
+    {% endif %}
+    <h3>Cтатьи</h3>
+    {% if object_list %}
+        <div class="articles-list">
+                {% for article in object_list %}
+                    <div class="article-preview py-4">
+                        <h2 class="article-title"><a href="{% url 'article' article.tag %}" class="link">{{ article.label }}</a></h2>
+                        <span class="views-container my-1 d-inline-block">Просмотров: <city class="views">{{ article.views }}</city></span>
+                        <div class="preview-content">
+                            <a href="{% url 'article' article.tag %}" class="img-link"><img src="{{ article.avatar.url }}" alt="" class="article-img d-inline-block"></a>
+                            <p class="article-text d-inline-block">
+                                {{ article.preview_text }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="pagination mt-4">
+                    {% bootstrap_pagination page %}
+                </div>
+        </div>
+    {% endif %}
+{% endblock %}
