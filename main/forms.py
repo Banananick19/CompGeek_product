@@ -7,15 +7,15 @@ from .utilities import *
 
 
 
-class ArticleWriteWidget(forms.TextInput):
+class TextWriteWidget(forms.TextInput):
 
 
     class Media:
         js = ("https://cdn.tiny.cloud/1/fz2mhs07b3qgkc5uyvxi3oskmyjkfqv7iteam2qivgn106v5/tinymce/5/tinymce.min.js",
-              STATIC_URL + 'js/tiny_init.js?ver=1.2',)
+              STATIC_URL + 'js/tiny_init.js?ver=1.9',)
 
 class ArticleWriteForm(forms.ModelForm):
-    text = forms.CharField(widget=ArticleWriteWidget(attrs={'id': 'article_text'}), required=False)
+    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'article_text'}), required=False)
 
     def clean(self):
         super().clean()
@@ -42,7 +42,7 @@ class ArticleWriteForm(forms.ModelForm):
         fields = ['label', 'avatar', 'text', 'preview_text', 'primary_category', 'secondary_category']
 
 class ArticleAdminWriteForm(forms.ModelForm):
-    text = forms.CharField(widget=ArticleWriteWidget(attrs={'id': 'article_text'}))
+    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'article_text'}))
 
 
     def save(self, commit=True):
@@ -72,8 +72,15 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
 
 class CommentForm(forms.ModelForm):
-    text = forms.CharField(widget=ArticleWriteWidget(attrs={'id': 'comment_text'}))
+    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'comment_text'}), required=False)
 
+    def clean(self):
+        text = self.cleaned_data['text']
+        if len(text) == 0:
+            errors = {
+                'text': ValidationError('Введите комментарии', code='text_miss')
+            }
+            raise ValidationError(errors)
     class Meta:
         model = Comment
         fields = ['text']

@@ -2,13 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28d0e213-dc4c-46ed-b412-d87884f4d5f3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/main/static/js/comment_slide.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main/static/js/sizer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CompGeek/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/CompGeek/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/static/css/.sass-cache/602f67b27cf35aae35807f4e52a59d25d4210dba/style.scssc" beforeDir="false" afterPath="$PROJECT_DIR$/main/static/css/.sass-cache/602f67b27cf35aae35807f4e52a59d25d4210dba/style.scssc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/main/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/static/css/style.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/main/static/css/style.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/static/css/style.scss" beforeDir="false" afterPath="$PROJECT_DIR$/main/static/css/style.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/static/js/tiny_init.js" beforeDir="false" afterPath="$PROJECT_DIR$/main/static/js/tiny_init.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/templates/layout/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/layout/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/templates/main/article.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/main/article.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/templates/main/articles.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/main/articles.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/main/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/main/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/main/writearticle.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/main/writearticle.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
     </list>

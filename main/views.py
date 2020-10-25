@@ -6,8 +6,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
+from django.utils import timezone
+from CompGeek.settings import PAGINATION_ARTICLES, PAGINATION_COMMENTS
 
-import datetime
+from datetime import timedelta
 
 from .forms import *
 from .models import *
@@ -17,7 +19,7 @@ from .utilities import get_pag, counted
 def index(request):
     articles = Article.objects.all()
     page = request.GET.get('page')
-    context = get_pag(articles, 1, page)
+    context = get_pag(articles, PAGINATION_ARTICLES, page)
     return render(request, 'main/articles.html', context)
 
 
@@ -43,29 +45,43 @@ def article(request, tag):
         article = Article.objects.get(tag=tag)
     except:
         messages.error(request, 'Мы не нашли эту статью')
-        return render(request, 'main/404.html', {})
-    comments = Comment.objects.all()
-    page = request.GET.get('page')
-    context = get_pag(comments, 10, page)
-    context.update({
-        'article': article,
-        'form': CommentForm()
-    })
+        response = render(request, 'main/404.html')
+        response.status_code = 404
+        return response
     if request.method == 'POST':
         if request.user.is_authenticated:
             form = CommentForm(request.POST)
             if form.is_valid():
                 comment = form.save(commit=False)
                 comment.author = request.user
+                comment.article = article
                 comment.save()
+            else:
+                comments = Comment.objects.filter(article=article)
+                page = request.GET.get('page')
+                context = get_pag(comments, 10, page)
+                context.update({
+                    'article': article,
+                    'form': form
+                })
                 return render(request, 'main/article.html', context)
+    comments = Comment.objects.filter(article=article)
+    page = request.GET.get('page')
+    context = get_pag(comments, PAGINATION_COMMENTS, page)
+    context.update({
+        'article': article,
+        'form': CommentForm()
+    })
     return render(request, 'main/article.html', context)
 
 
 def home(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    return render(request, 'main/home.html', {})
+    articles = Article.objects.filter(author=request.user)
+    page = request.GET.get('page')
+    context = get_pag(articles, PAGINATION_ARTICLES, page)
+    return render(request, 'main/home.html', context)
 
 
 def loginer(request):
@@ -101,6 +117,18 @@ def loginer(request):
         }
         return render(request, 'main/login.html', context)
 
+def profile(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except:
+        response = render(request, 'main/404.html')
+        response.status_code = 404
+        return response
+    articles = Article.objects.filter(author=user)
+    page = request.GET.get('page')
+    context = get_pag(articles, PAGINATION_ARTICLES, page)
+    context['profile_user'] = user
+    return render(request, 'main/profile_user.html', context)
 
 def logouter(request):
     if request.user.is_authenticated:
@@ -176,7 +204,7 @@ def articles_by(request):
     if articles:
         articles = articles.values('tag', 'label')
         page = request.GET.get('page')
-        context = get_pag(articles, 10, page)
+        context = get_pag(articles, PAGINATION_ARTICLES, page)
         return render(request, 'main/articles.html', context)
     else:
         context = {
@@ -184,9 +212,9 @@ def articles_by(request):
         }
         return render(request, 'main/articles.html', context)
 
-def articles_by_category(request, category_slug):
+def articles_by_category(request, category_tag):
     try:
-        category = PrimaryCategory.objects.get(slug=category_slug)
+        category = PrimaryCategory.objects.get(tag=category_tag)
     except:
         response = render(request, 'main/404.html')
         response.status_code = 404
@@ -194,7 +222,7 @@ def articles_by_category(request, category_slug):
     articles = Article.objects.filter(primary_category=category)
     if articles:
         page = request.GET.get('page')
-        context = get_pag(articles, 10, page)
+        context = get_pag(articles, PAGINATION_ARTICLES, page)
         return render(request, 'main/articles.html', context)
     else:
         context = {
@@ -202,10 +230,10 @@ def articles_by_category(request, category_slug):
         }
         return render(request, 'main/articles.html', context)
 
-def articles_by_categories(request, category_slug, secondary_category_slug):
+def articles_by_categories(request, category_tag, secondary_category_tag):
     try:
-        category = PrimaryCategory.objects.get(slug=category_slug)
-        secondary_category = SecondaryCategory.objects.get(slug=secondary_category_slug)
+        category = PrimaryCategory.objects.get(slug=category_tag)
+        secondary_category = SecondaryCategory.objects.get(slug=secondary_category_tag)
     except:
         response = render(request, 'main/404.html')
         response.status_code = 404
@@ -213,7 +241,7 @@ def articles_by_categories(request, category_slug, secondary_category_slug):
     articles = Article.objects.filter(primary_category=category, secondary_category=secondary_category)
     if articles:
         page = request.GET.get('page')
-        context = get_pag(articles, 10, page)
+        context = get_pag(articles, PAGINATION_ARTICLES, page)
         return render(request, 'main/articles.html', context)
     else:
         context = {
@@ -221,20 +249,23 @@ def articles_by_categories(request, category_slug, secondary_category_slug):
         }
         return render(request, 'main/articles.html', context)
 
-def articles_by_time(request, time):
-    if not time in ['week', 'month']:
-        messages.warning(request, 'Неверное значение даты')
-        return redirect(request.META.get('HTTP_REFERER'))
-    today = datetime.date.today()
+def articles_by_views(request, time):
+    if not time in ['week', 'month', 'ever']:
+        response = render(request, 'main/404.html')
+        response.status_code = 404
+        return response
     articles = False
     if time == 'week':
-        articles = Article.objects.filter(date__lte=today, date__gte=today-datetime.timedelta(days=7))
-    if time == 'month':
-        articles = Article.objects.filter(date__lte=today, date__gte=today-datetime.timedelta(days=30))
+        articles = Article.objects.filter(date__gte=timezone.now() - timedelta(days=7))
+    elif time == 'month':
+        articles = Article.objects.filter(date__gte=timezone.now() - timedelta(days=30))
+    elif time == 'ever':
+        articles = Article.objects.all()
+
     if articles:
-        articles.order_by('-count')
+        articles.order_by('-views')
         page = request.GET.get('page')
-        context = get_pag(articles, 10, page)
+        context = get_pag(articles, PAGINATION_ARTICLES, page)
         return render(request, 'main/articles.html', context)
     else:
         context = {

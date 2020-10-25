@@ -117,6 +117,11 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Pagination settings
+
+PAGINATION_ARTICLES = 10
+PAGINATION_COMMENTS = 20
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
