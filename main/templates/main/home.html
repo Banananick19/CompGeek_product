@@ -10,6 +10,7 @@
     {% else %}
         <img src="{{ user.email|gravatar_url:40 }}" height="40" width="40" class="rounded-circle">
     {% endif %}
+    <h2><a href="{% url 'write_article' %}" class="btn btn-primary">Написать статью</a></h2>
     <h3>Мои статьи</h3>
     {% if object_list %}
         <div class="articles-list">

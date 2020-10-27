@@ -181,18 +181,8 @@ def sing_up(request):
 
 
 def articles_by(request):
-    parent_rubric = request.GET.get('parent_category')
-    sub_rubric = request.GET.get('sub_caregory')
     pattern = request.GET.get('pattern')
     articles = []
-
-    if parent_rubric:
-        articles = Article.objects.filter(primary_category=parent_rubric)
-    if sub_rubric:
-        if articles != []:
-            articles = articles.filter(secondary_category=sub_rubric)
-        else:
-            articles = Article.objects.filter(secondary_category=sub_rubric)
     if pattern:
         if articles != []:
             articles = articles.filter(
@@ -202,7 +192,6 @@ def articles_by(request):
                 Q(text__icontains=pattern) | Q(label__icontains=pattern) | Q(tag__icontains=pattern))
 
     if articles:
-        articles = articles.values('tag', 'label')
         page = request.GET.get('page')
         context = get_pag(articles, PAGINATION_ARTICLES, page)
         return render(request, 'main/articles.html', context)

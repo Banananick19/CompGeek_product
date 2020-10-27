@@ -85,6 +85,20 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['text']
 
+class CommentAdminForm(forms.ModelForm):
+    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'comment_text'}), required=False)
+
+    def clean(self):
+        text = self.cleaned_data['text']
+        if len(text) == 0:
+            errors = {
+                'text': ValidationError('Введите комментарии', code='text_miss')
+            }
+            raise ValidationError(errors)
+    class Meta:
+        model = Comment
+        fields = ['author', 'article', 'text']
+
 
 class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(required=True, label='Адрес элетронной почты')
