@@ -194,6 +194,7 @@ def articles_by(request):
     if articles:
         page = request.GET.get('page')
         context = get_pag(articles, PAGINATION_ARTICLES, page)
+        context['pattern']: pattern
         return render(request, 'main/articles.html', context)
     else:
         context = {
@@ -212,6 +213,7 @@ def articles_by_category(request, category_tag):
     if articles:
         page = request.GET.get('page')
         context = get_pag(articles, PAGINATION_ARTICLES, page)
+        context['category'] = category
         return render(request, 'main/articles.html', context)
     else:
         context = {
@@ -231,6 +233,8 @@ def articles_by_categories(request, category_tag, secondary_category_tag):
     if articles:
         page = request.GET.get('page')
         context = get_pag(articles, PAGINATION_ARTICLES, page)
+        context['category'] = category
+        context['secondary_category'] = secondary_category
         return render(request, 'main/articles.html', context)
     else:
         context = {

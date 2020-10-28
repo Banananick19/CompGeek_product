@@ -4,11 +4,24 @@
 {% load bootstrap4 %}
 
 {% block content %}
+    {% if category %}
+    <h3>
+        {% if secondary_category %}
+            <a href="{% url 'articles_by_category' article.primary_category.tag %}">{{ category.label }}</a> | <a href="{% url 'articles_by_categories' article.primary_category.tag article.secondary_category.tag %}">{{ secondary_category.label }}</a>
+        {% endif %}
+        <a href="{% url 'articles_by_category' category.tag %}">{{ category.label }}</a>
+    </h3>
+    {% endif %}
+
+    {% if pattern %}
+        <h3>Поиск по слову: {{ pattern }}</h3>
+    {% endif %}
     {% if object_list %}
         <div class="articles-list">
                 {% for article in object_list %}
                     <div class="article-preview py-4">
                         <h2 class="article-title"><a href="{% url 'article' article.tag %}" class="link">{{ article.label }}</a></h2>
+                        <h6 class="article-categories"><a href="{% url 'articles_by_category' article.primary_category.tag %}">{{ article.primary_category.label }}</a> | <a href="{% url 'articles_by_categories' article.primary_category.tag article.secondary_category.tag %}">{{ article.secondary_category.label }}</a></h6>
                         <span class="views-container my-1 d-inline-block">Просмотров: <city class="views">{{ article.views }}</city></span>
                         <div class="preview-content">
                             <a href="{% url 'article' article.tag %}" class="img-link"><img src="{{ article.avatar.url }}" alt="" class="article-img d-inline-block"></a>
@@ -22,5 +35,7 @@
                     {% bootstrap_pagination page %}
                 </div>
         </div>
+    {% else %}
+    <h3> Мы ничего не нашли </h3>
     {% endif %}
 {% endblock %}
