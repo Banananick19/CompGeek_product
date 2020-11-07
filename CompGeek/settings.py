@@ -25,7 +25,7 @@ SECRET_KEY = 'om&3sp!=8k*uf)f-y-$ei#fb6%n#cw))vbc0nj+1)jd9*g%na#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', 'banana19.pythonanywhere.com']
 
 # Application definition
 
@@ -123,6 +123,11 @@ USE_TZ = True
 
 PAGINATION_ARTICLES = 10
 PAGINATION_COMMENTS = 20
+
+#authenticate
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
+LOGIN_REDIRECT_URL = '/home/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

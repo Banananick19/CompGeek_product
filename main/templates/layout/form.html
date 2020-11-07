@@ -2,12 +2,20 @@
 
 {% load bootstrap4 %}
 
+{% if form_title %}
+    {% block title %}{{ form_title }}{% endblock %}
+{% endif %}
+
 {% block content %}
+    {% if form_title %}
+       <h2 class='form-title'>{{ form_title }}</h2>
+    {% endif %}
+
 
     <form method="POST">
         {% csrf_token %}
         {% bootstrap_form form %}
-        {% bootstrap_button button_type='submit' content='Войти' %}
+        {% bootstrap_button button_type='submit' content='Отправить' %}
     </form>
 
 {% endblock %}

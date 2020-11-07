@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
@@ -25,10 +26,15 @@ def index(request):
 
 class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = User
-    template_name = 'main/change_user_info.html'
+    template_name = 'layout/form.html'
     form_class = ChangeUserInfoForm
     success_url = reverse_lazy('home')
     success_message = 'Личные данные пользователя изменены'
+
+    def get_context_data(self, **kwargs):
+        if 'form_tile' not in kwargs:
+            kwargs['form_title'] = 'Изменение данных пользователя'
+        return super().get_context_data(**kwargs)
 
     def dispatch(self, request, *args, **kwargs):
         self.user_id = request.user.pk
@@ -74,10 +80,8 @@ def article(request, tag):
     })
     return render(request, 'main/article.html', context)
 
-
+@login_required
 def home(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
     articles = Article.objects.filter(author=request.user)
     page = request.GET.get('page')
     context = get_pag(articles, PAGINATION_ARTICLES, page)
@@ -86,7 +90,11 @@ def home(request):
 
 def loginer(request):
     if request.user.is_authenticated:
+        messages.error('Вы уже вошли')
         return redirect('home')
+    context = {
+        'form_title': 'Вход'
+    }
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -99,23 +107,17 @@ def loginer(request):
                 login(request, user)
                 return redirect('home')
             else:
-                context = {
-                    'form': LoginForm(request.POST)
-                }
+                context['form'] = LoginForm(request.POST)
                 messages.error(request, 'Неверный логин или пароль')
-                return render(request, 'main/login.html', context)
+                return render(request, 'layout/form.html', context)
         else:
-            context = {
-                'form': LoginForm(request.POST)
-            }
+            context['form'] = LoginForm(request.POST)
             messages.error(request, 'Поля заполнены неверно')
-            return render(request, 'main/login.html', context)
+            return render(request, 'layout/form.html', context)
 
     if request.method == 'GET':
-        context = {
-            'form': LoginForm()
-        }
-        return render(request, 'main/login.html', context)
+        context['form'] = LoginForm()
+        return render(request, 'layout/form.html', context)
 
 def profile(request, username):
     try:
@@ -130,31 +132,30 @@ def profile(request, username):
     context['profile_user'] = user
     return render(request, 'main/profile_user.html', context)
 
+@login_required
 def logouter(request):
-    if request.user.is_authenticated:
-        logout(request)
-        messages.success(request, 'Вы вышли :<(')
-        return redirect('login')
-    else:
-        messages.error(request, 'Как вы собирались выходить? Вы даже не вошли -_-')
-        return redirect('login')
+    logout(request)
+    messages.success(request, 'Вы вышли :<(')
+    return redirect('login')
+
 
 
 def sing_up(request):
     if request.user.is_authenticated:
         return redirect('home')
 
+    context = {
+        'form_title': 'Регистрация'
+    }
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
         if form.is_valid():
             try:
                 form.clean()
             except:
-                context = {
-                    'form': form
-                }
+                context['form'] = form
                 messages.error(request, 'Неверно заполнены поля. Проверьте - совпадают ли пароли?')
-                return render(request, 'main/sing_up.html', context)
+                return render(request, 'layout/form.html', context)
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
@@ -167,17 +168,13 @@ def sing_up(request):
                 messages.info(request, 'Попробуйте войти')
                 return redirect('login')
         else:
-            context = {
-                'form': form
-            }
+            context['form'] = form
             messages.error(request, 'Неверно заполнены поля. Проверьте - совпадают ли пароли?')
-            return render(request, 'main/sing_up.html', context)
+            return render(request, 'layout/form.html', context)
 
     if request.method == 'GET':
-        context = {
-            'form': RegisterUserForm()
-        }
-        return render(request, 'main/sing_up.html', context)
+        context['form'] = RegisterUserForm()
+        return render(request, 'layout/form.html', context)
 
 
 def articles_by(request):
@@ -266,10 +263,13 @@ def articles_by_views(request, time):
         }
         return render(request, 'main/articles.html', context)
 
+@login_required
 def write_article(request):
-    if not request.user.is_authenticated:
-        messages.error('Вы не зашли в аккаунт')
-        return redirect('login')
+
+    context = {
+        'form_title': 'Написать статью'
+    }
+
     if request.method == 'POST':
         form = ArticleWriteForm(request.POST)
         form.author = request.user
@@ -278,17 +278,13 @@ def write_article(request):
             messages.success(request, 'Вы успешно создали статью')
             return redirect(request.META.get('HTTP_REFERER'))
         else:
-            context = {
-                'form': form
-            }
+            context['form'] = form
             messages.error(request, 'Поля заполенены неверно')
-            return render(request, 'main/writearticle.html', context)
+            return render(request, 'layout/form.html', context)
     if request.method == 'GET':
         form = ArticleWriteForm()
-        context = {
-            'form': form
-        }
-        return render(request, 'main/writearticle.html', context)
+        context['form'] = form
+        return render(request, 'layout/form.html', context)
 
 
 #erros handelrs

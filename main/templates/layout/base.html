@@ -19,23 +19,25 @@
         <img src="{% static 'img/site/list.svg' %}" width="40px" height="40px" class="mobile-nav-button d-none">
 
         <div class="navigation-mobile d-none">
-            <img src="{% static 'img/site/list.svg' %}" width="40px" height="40px" class="mobile-nav-button d-none">
+            <img src="{% static 'img/site/list.svg' %}" width="40px" height="40px" class="mobile-nav-button d-none m-3">
 
             <span class="search"><form action="{% url 'articles' %}"  method="GET" class="search-form form-group"><input type="text" name="pattern" class="form-control d-inline-block pattern"><input type='image' name='submit'  class='search-submit' width="40px" height="40px"  src="{% static 'img/site/search.svg' %}" /></form></span>
 
-            <h3 class="text-light">Лучшее за ...</h3>
-                <a href="{% url 'articles_by_views' 'week' %}" class="d-block">Неделю</a>
-                <a href="{% url 'articles_by_views' 'month' %}" class="d-block">Месяц</a>
-                <a href="{% url 'articles_by_views' 'ever' %}">Все время</a>
-                <h3 class="text-light">Категории</h3>
-                {% for category in primary_categories %}
-                    <a href="{% url 'articles_by_category' category.tag %}">{{ category.label }}</a>
-                    <ul>
-                        {% for secondary_category in secondary_categories %}
-                            <li><a href="{% url 'articles_by_categories' category.tag secondary_category.tag %}">{{ secondary_category.label }}</a>
-                        {% endfor %}
-                    </ul>
-                {% endfor %}
+            <div class='navigation-list ml-2'>
+                <h3 class="text-light">Лучшее за ...</h3>
+                    <a href="{% url 'articles_by_views' 'week' %}" class="d-block">Неделю</a>
+                    <a href="{% url 'articles_by_views' 'month' %}" class="d-block">Месяц</a>
+                    <a href="{% url 'articles_by_views' 'ever' %}">Все время</a>
+                    <h3 class="text-light">Категории</h3>
+                    {% for category in primary_categories %}
+                        <a href="{% url 'articles_by_category' category.tag %}">{{ category.label }}</a>
+                        <ul>
+                            {% for secondary_category in secondary_categories %}
+                                <li><a href="{% url 'articles_by_categories' category.tag secondary_category.tag %}">{{ secondary_category.label }}</a>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+            </div>
         </div>
 
 
