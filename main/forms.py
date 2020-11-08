@@ -60,6 +60,12 @@ class ArticleAdminWriteForm(forms.ModelForm):
         fields = ['label', 'tag', 'avatar', 'text', 'preview_text', 'primary_category', 'secondary_category', 'author']
 
 
+class ChangeUserPasswordForm(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput(), label='Старый пароль')
+    new_password1 = forms.CharField(widget=forms.PasswordInput(), label='Новый пароль')
+    new_password2 = forms.CharField(widget=forms.PasswordInput(), label='Повторите пароль')
+
+
 class ChangeUserInfoForm(forms.ModelForm):
 	email = forms.EmailField(required=True, label='Адрес элетронной почты')
 
@@ -68,8 +74,8 @@ class ChangeUserInfoForm(forms.ModelForm):
 		fields = ['username', 'avatar', 'email']
 
 class LoginForm(forms.Form):
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput())
+    username = forms.CharField(label='Имя')
+    password = forms.CharField(widget=forms.PasswordInput(), label='Пароль')
 
 class CommentForm(forms.ModelForm):
     text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'comment_text'}), required=False)

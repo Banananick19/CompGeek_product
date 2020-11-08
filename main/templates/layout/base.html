@@ -90,8 +90,11 @@
                         </a>
 
                         <div class="dropdown-menu">
-                            <a href="{% url 'home' %}" class="dropdown-item">{{ user.username }}</a>
-                            <a href="{% url 'home_change' %}" class="dropdown-item">Редактировать</a>
+                            <a href="{% url 'home' %}" class="dropdown-item-text">{{ user.username }}</a>
+                            <a href="{% url 'home_change' %}" class="dropdown-item-text">Редактировать</a>
+                            {% if user.is_superuser %}
+                                <a href="/admin" class="dropdown-item-text">Панель администратора</a>
+                            {% endif %}
                             <div class="dropdown-divider"></div>
                             <a href="{% url 'logout' %}" class="dropdown-item badge-danger">Выйти</a>
                         </div>

@@ -220,8 +220,8 @@ def articles_by_category(request, category_tag):
 
 def articles_by_categories(request, category_tag, secondary_category_tag):
     try:
-        category = PrimaryCategory.objects.get(slug=category_tag)
-        secondary_category = SecondaryCategory.objects.get(slug=secondary_category_tag)
+        category = PrimaryCategory.objects.get(tag=category_tag)
+        secondary_category = SecondaryCategory.objects.get(tag=secondary_category_tag)
     except:
         response = render(request, 'main/404.html')
         response.status_code = 404
