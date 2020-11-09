@@ -271,10 +271,11 @@ def write_article(request):
     }
 
     if request.method == 'POST':
-        form = ArticleWriteForm(request.POST)
-        form.author = request.user
+        form = ArticleWriteForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            article = form.save(commit=False)
+            article.author = request.user
+            article.save()
             messages.success(request, 'Вы успешно создали статью')
             return redirect(request.META.get('HTTP_REFERER'))
         else:
