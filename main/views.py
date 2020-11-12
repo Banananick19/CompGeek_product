@@ -32,8 +32,7 @@ class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     success_message = 'Личные данные пользователя изменены'
 
     def get_context_data(self, **kwargs):
-        if 'form_tile' not in kwargs:
-            kwargs['form_title'] = 'Изменение данных пользователя'
+        kwargs['form_title'] = 'Изменение данных пользователя'
         return super().get_context_data(**kwargs)
 
     def dispatch(self, request, *args, **kwargs):
@@ -50,10 +49,8 @@ def article(request, tag):
     try:
         article = Article.objects.get(tag=tag)
     except:
-        messages.error(request, 'Мы не нашли эту статью')
-        response = render(request, 'main/404.html')
-        response.status_code = 404
-        return response
+        return render(request, 'main/404.html', {})
+
     if request.method == 'POST':
         if request.user.is_authenticated:
             form = CommentForm(request.POST)

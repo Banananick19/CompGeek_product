@@ -21,7 +21,7 @@
         <div class="navigation-mobile d-none">
             <img src="{% static 'img/site/list.svg' %}" width="40px" height="40px" class="mobile-nav-button d-none m-3">
 
-            <span class="search"><form action="{% url 'articles' %}"  method="GET" class="search-form form-group"><input type="text" name="pattern" class="form-control d-inline-block pattern"><input type='image' name='submit'  class='search-submit' width="40px" height="40px"  src="{% static 'img/site/search.svg' %}" /></form></span>
+            <span class="search"><form action="{% url 'articles' %}"  method="GET" class="search-form form-group"><input type="text" name="pattern" class="form-control d-inline-block pattern"><input type='image' class='search-submit' width="40px" height="40px"  src="{% static 'img/site/search.svg' %}" /></form></span>
 
             <div class='navigation-list ml-2'>
                 <h3 class="text-light">Лучшее за ...</h3>
@@ -70,7 +70,7 @@
                     </div>
                 </div>
             {% endfor %}
-            <span class="search"><form action="{% url 'articles' %}"  method="GET" class="search-form form-group"><input type="text" name="pattern" class="form-control d-inline-block pattern"><input type='image' name='submit'  class='search-submit' width="40px" height="40px"  src="{% static 'img/site/search.svg' %}" />
+            <span class="search"><form action="{% url 'articles' %}"  method="GET" class="search-form form-group"><input type="text" name="pattern" class="form-control d-inline-block pattern"><input type='image' class='search-submit' width="40px" height="40px"  src="{% static 'img/site/search.svg' %}" />
 </form></span>
         </nav><br>
 

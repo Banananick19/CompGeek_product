@@ -12,10 +12,10 @@ class TextWriteWidget(forms.TextInput):
 
     class Media:
         js = ("https://cdn.tiny.cloud/1/fz2mhs07b3qgkc5uyvxi3oskmyjkfqv7iteam2qivgn106v5/tinymce/5/tinymce.min.js",
-              STATIC_URL + 'js/tiny_init.js?ver=1.9',)
+              STATIC_URL + 'js/tiny_init.js',)
 
 class ArticleWriteForm(forms.ModelForm):
-    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'article_text'}), required=False)
+    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'article_text'}), required=False, label='Текст')
 
     def clean(self):
         super().clean()
@@ -42,7 +42,7 @@ class ArticleWriteForm(forms.ModelForm):
         fields = ['label', 'avatar', 'text', 'preview_text', 'primary_category', 'secondary_category']
 
 class ArticleAdminWriteForm(forms.ModelForm):
-    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'article_text'}))
+    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'article_text'}), label='Текст')
 
 
     def save(self, commit=True):
@@ -78,7 +78,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(), label='Пароль')
 
 class CommentForm(forms.ModelForm):
-    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'comment_text'}), required=False)
+    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'comment_text'}), required=False, label='Текст')
 
     def clean(self):
         text = self.cleaned_data['text']
@@ -92,7 +92,7 @@ class CommentForm(forms.ModelForm):
         fields = ['text']
 
 class CommentAdminForm(forms.ModelForm):
-    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'comment_text'}), required=False)
+    text = forms.CharField(widget=TextWriteWidget(attrs={'id': 'comment_text'}), required=False, label='Текст')
 
     def clean(self):
         text = self.cleaned_data['text']
@@ -108,7 +108,7 @@ class CommentAdminForm(forms.ModelForm):
 
 class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(required=True, label='Адрес элетронной почты')
-    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput, )
+    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Пароль(повторно)', widget=forms.PasswordInput,
                                 help_text='Введите пароль ещё раз')
 

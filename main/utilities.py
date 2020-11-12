@@ -12,11 +12,11 @@ def counted(f):
         with transaction.atomic():
             try:
                 article = Article.objects.get(tag=kwargs['tag'])
+                article.views = F('views') + 1
+                article.save()
             except:
-                return
-            article.count = F('count') + 1
-            article.save()
-        return f(request, *args, **kwargs)
+                pass
+            return f(request, *args, **kwargs)
     return decorator
 
 def transliterate(string):
