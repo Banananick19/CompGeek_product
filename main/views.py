@@ -14,13 +14,14 @@ from datetime import timedelta
 
 from .forms import *
 from .models import *
-from .utilities import get_pag, counted
+from .utilities import *
 
 
 def index(request):
     articles = Article.objects.all()
     page = request.GET.get('page')
     context = get_pag(articles, PAGINATION_ARTICLES, page)
+    context['title'] = 'CompGeek'
     return render(request, 'main/articles.html', context)
 
 
@@ -46,10 +47,7 @@ class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 @counted
 def article(request, tag):
-    try:
-        article = Article.objects.get(tag=tag)
-    except:
-        return render(request, 'main/404.html', {})
+    article = get_object_or_404(Article, tag=tag)
 
     if request.method == 'POST':
         if request.user.is_authenticated:
@@ -65,7 +63,8 @@ def article(request, tag):
                 context = get_pag(comments, 10, page)
                 context.update({
                     'article': article,
-                    'form': form
+                    'form': form,
+                    'title': article.label
                 })
                 return render(request, 'main/article.html', context)
     comments = Comment.objects.filter(article=article)
@@ -73,7 +72,8 @@ def article(request, tag):
     context = get_pag(comments, PAGINATION_COMMENTS, page)
     context.update({
         'article': article,
-        'form': CommentForm()
+        'form': CommentForm(),
+        'title': article.label
     })
     return render(request, 'main/article.html', context)
 
@@ -82,6 +82,7 @@ def home(request):
     articles = Article.objects.filter(author=request.user)
     page = request.GET.get('page')
     context = get_pag(articles, PAGINATION_ARTICLES, page)
+    context['title'] = request.user.username
     return render(request, 'main/home.html', context)
 
 
@@ -117,16 +118,12 @@ def loginer(request):
         return render(request, 'layout/form.html', context)
 
 def profile(request, username):
-    try:
-        user = User.objects.get(username=username)
-    except:
-        response = render(request, 'main/404.html')
-        response.status_code = 404
-        return response
+    user = get_object_or_404(User, username=username)
     articles = Article.objects.filter(author=user)
     page = request.GET.get('page')
     context = get_pag(articles, PAGINATION_ARTICLES, page)
     context['profile_user'] = user
+    context['title'] = user.username
     return render(request, 'main/profile_user.html', context)
 
 @login_required
@@ -188,11 +185,13 @@ def articles_by(request):
     if articles:
         page = request.GET.get('page')
         context = get_pag(articles, PAGINATION_ARTICLES, page)
-        context['pattern']: pattern
+        context['pattern'] = pattern
+        context['title'] = pattern
         return render(request, 'main/articles.html', context)
     else:
         context = {
-            'articles': []
+            'articles': [],
+            'title': pattern
         }
         return render(request, 'main/articles.html', context)
 
@@ -208,10 +207,12 @@ def articles_by_category(request, category_tag):
         page = request.GET.get('page')
         context = get_pag(articles, PAGINATION_ARTICLES, page)
         context['category'] = category
+        context['title'] = category.label
         return render(request, 'main/articles.html', context)
     else:
         context = {
-            'articles': []
+            'articles': [],
+            'title': category.label
         }
         return render(request, 'main/articles.html', context)
 
@@ -229,10 +230,12 @@ def articles_by_categories(request, category_tag, secondary_category_tag):
         context = get_pag(articles, PAGINATION_ARTICLES, page)
         context['category'] = category
         context['secondary_category'] = secondary_category
+        context['title'] = category.label + '->' + secondary_category.label
         return render(request, 'main/articles.html', context)
     else:
         context = {
-            'articles': []
+            'articles': [],
+            'title': category.label + '->' + secondary_category.label
         }
         return render(request, 'main/articles.html', context)
 
@@ -253,10 +256,12 @@ def articles_by_views(request, time):
         articles.order_by('-views')
         page = request.GET.get('page')
         context = get_pag(articles, PAGINATION_ARTICLES, page)
+        context['title'] = 'Лучшее за ' + get_mean(time, {'week': 'неделю', 'month': 'месяц', 'ever': 'все время'})
         return render(request, 'main/articles.html', context)
     else:
         context = {
-            'object_list': articles
+            'object_list': articles,
+            'title': 'Лучшее за ' + get_mean(time, {'week': 'неделю', 'month': 'месяц', 'ever': 'все время'})
         }
         return render(request, 'main/articles.html', context)
 
@@ -287,5 +292,26 @@ def write_article(request):
 
 #erros handelrs
 
-def error_404(request, exception):
-   return render(request, 'main/404.html', {})
+def error_404(request, *args, **kwargs):
+    context = {
+        'title': '404',
+        'error_message': 'Страница не найдена',
+        'error_code': 404
+    }
+    return render(request, 'layout/error.html', context)
+
+def error_403(request, *args, **kwargs):
+    context = {
+        'title': '403',
+        'error_message': 'Недоступно.',
+        'error_code': 403
+    }
+    return render(request, 'layout/error.html', context)
+
+def error_500(request, *args, **kwargs):
+    context = {
+        'title': '500',
+        'error_message': 'Ошибка сервера.',
+        'error_code': 500
+    }
+    return render(request, 'layout/error.html', context)

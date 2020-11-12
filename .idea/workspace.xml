@@ -2,12 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28d0e213-dc4c-46ed-b412-d87884f4d5f3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/main/templates/layout/error.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CompGeek.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CompGeek.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CompGeek/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/CompGeek/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/templates/main/article.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/main/article.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/templates/main/articles.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/main/articles.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/templates/main/change_user_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/main/change_user_info.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/layout/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/templates/layout/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/main/404.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/main/change_user_info.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/main/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/main/password_change.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/main/sing_up.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/templates/main/writearticle.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/article_avatars/42.png" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

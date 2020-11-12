@@ -6,6 +6,11 @@ from .models import Article
 
 
 
+def get_mean(expression, dictionary):
+    for key in dictionary:
+        if expression == key:
+            return dictionary[key]
+
 def counted(f):
     @wraps(f)
     def decorator(request, *args, **kwargs):

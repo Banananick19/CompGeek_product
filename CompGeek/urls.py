@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.staticfiles.views import serve
 from django.views.decorators.cache import never_cache
 from django.conf.urls.static import static
-from main.views import error_404
+from main.views import error_404, error_500, error_403
 
 
 urlpatterns = [
@@ -13,6 +13,8 @@ urlpatterns = [
 ]
 
 handler404 = error_404
+handler403 = error_403
+handler500 = error_500
 
 
 if settings.DEBUG:
