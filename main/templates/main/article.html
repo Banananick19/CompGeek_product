@@ -38,7 +38,7 @@
             <div class="comments-list">
                 {% for comment in object_list %}
                     <div class="comment py-4 my-2">
-                        <h2 class="commenter-name d-inline-block">{{ comment.author.username }}</h2>
+                        <a href="{% url 'profile' comment.author.username %}"><h2 class="commenter-name d-inline-block">{{ comment.author.username }}</h2></a>
                         {% if comment.author.avatar %}
                             <img src="{{ comment.author.avatar.url }}" alt="" class="user-avatar rounded-circle" width="40" height="40">
                         {% else %}
