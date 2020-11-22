@@ -1,3 +1,5 @@
+const point_size = 1910;
+
 let button = $('.mobile-nav-button');
 let nav_mobile = $('.navigation-mobile');
 let nav_mobile_list = $('.navigation-mobile .navigation-list');
@@ -17,7 +19,7 @@ window.onload = function(e) {
 }
 
 function check_width() {
-    if ( window.innerWidth < 1650 ) {
+    if ( window.innerWidth < point_size ) {
         console.log(window.innerWidth)
         button.removeClass('d-none');
         nav.removeClass('d-inline-block');

@@ -40,24 +40,7 @@
             <img src="{% static 'img/site/logo.png' %}" alt="" class="logo">
         </a>
 
-        <nav class="navigation d-inline-block">
-            {% for category in primary_categories %}
-                <div class="btn-group">
-                    <a href="{% url 'articles_by_category' category.tag %}" class="btn btn-outline-primary">{{ category.label }}</a>
-                    <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu">
-                      {% for secondary_category in secondary_categories %}
-                          <a class="dropdown-item" href="{% url 'articles_by_categories' category.tag secondary_category.tag %}">{{ secondary_category.label }}</a>
-                      {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
-            <span class="search"><form action="{% url 'articles' %}"  method="GET" class="search-form form-group"><input type="text" name="pattern" class="form-control d-inline-block pattern"><input type='image' class='search-submit' width="40px" height="40px"  src="{% static 'img/site/search.svg' %}" />
-</form></span>
-        </nav><br>
-
+        <h1 class='site-title text-light'>CompGeek</h1>
 
 
         {%  if user.is_authenticated %}
@@ -92,6 +75,26 @@
             </div>
         {% endif %}
     </div>
+
+    <nav class="navigation d-inline-block">
+        <span class="search"><form action="{% url 'articles' %}"  method="GET" class="search-form"><input type="text" name="pattern" class="form-control d-inline-block pattern"><input type='image' class='search-submit' width="40px" height="40px"  src="{% static 'img/site/search.svg' %}" />
+            </form></span>
+            {% for category in primary_categories %}
+                <div class="btn-group dropright w-100 my-1">
+                    <a href="{% url 'articles_by_category' category.tag %}" class="btn btn-outline-primary">{{ category.label }}</a>
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" style="position: absolute; transform: translate3d(111px, 0px, 0px); top: 0px; left: 0px; will-change: transform;">
+                      {% for secondary_category in secondary_categories %}
+                          <a class="dropdown-item" href="{% url 'articles_by_categories' category.tag secondary_category.tag %}">{{ secondary_category.label }}</a>
+                      {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </nav>
+
     <div class="site-content">
         {% block content %}{% endblock %}
     </div>
