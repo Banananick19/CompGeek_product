@@ -45,7 +45,7 @@ class SecondaryCategory(models.Model):
 class Article(models.Model):
     avatar = models.ImageField(blank=True, upload_to='img/article_avatars', verbose_name='аватар')
     date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-    author = models.ForeignKey('User', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Автор')
+    author = models.ForeignKey('User', on_delete=models.CASCADE, null=True, blank=True, verbose_name='Автор')
     label = models.CharField(max_length=100, null=True, blank=True, unique=True, verbose_name='Название')
     tag = models.CharField(max_length=100, null=True, blank=True, unique=True, verbose_name='Тэг')
     text = models.TextField(verbose_name='Тест')

@@ -14,9 +14,7 @@ window.onresize = function(e) {
     check_width()
 }
 
-window.onload = function(e) {
-    check_width()
-}
+document.addEventListener('DOMContentLoaded', check_width)
 
 function check_width() {
     if ( window.innerWidth < point_size ) {

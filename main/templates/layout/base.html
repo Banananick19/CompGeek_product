@@ -7,6 +7,15 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="UTF-8">
+
+    {% if article %}
+        <meta name='description' content='{{article.text}}, {{article.preview_text}}'>
+        <meta name='keywords' content='{{ title }}, CompGeek, {% for category in primary_categories %}{{category.label}}, {% endfor %}, {{ article.label }}'>
+        <meta name='author' content='{{ article.author.username }}'>
+        {% else %}
+            <meta name='keywords' content='{{ title }}, CompGeek, {% for category in primary_categories %}{{category.label}}, {% endfor %}'>
+            <meta name='description' content='{{ title }}, CompGeek, {% for category in primary_categories %}{{category.label}}, {% endfor %}'>
+    {% endif %}
     <title>{% block title %}{% if title %}{{ title }}{% endif %}{% endblock %}</title>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
@@ -14,7 +23,7 @@
 </head>
 <body>
     {% bootstrap_messages %}
-    <div class="header p-3">
+    <div class="header p-3" itemscope>
 
         <img src="{% static 'img/site/list.svg' %}" width="40px" height="40px" class="mobile-nav-button d-none">
 
@@ -37,10 +46,10 @@
 
 
         <a href="\">
-            <img src="{% static 'img/site/logo.png' %}" alt="" class="logo">
+            <img src="{% static 'img/site/logo.png' %}" alt="" class="logo pb-5">
         </a>
 
-        <h1 class='site-title text-light'>CompGeek</h1>
+        <h1 class='site-title text-light' itemprop='name'>CompGeek</h1>
 
 
         {%  if user.is_authenticated %}
@@ -99,13 +108,13 @@
         {% block content %}{% endblock %}
     </div>
 
-    <div class="footer p-4">
+    <div class="footer p-4" itemscope>
         <a href="\">
             <img src="{% static 'img/site/logo.png' %}" alt="" class="logo">
         </a>
 
         <p class="info">
-            Сайт был сделан в рамках проекта студента "АПОУ ВО "ВКСиИТ" группы "ИСП-120п".
+            Сайт был сделан в рамках проекта студента <strong itemprop='name'>"АПОУ ВО "ВКСиИТ"</strong> группы "ИСП-120п".
         </p>
     </div>
     <script src="{% static 'js/sizer.js' %}?ver{% now '%f' %}" defer></script>
