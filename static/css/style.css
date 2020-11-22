@@ -78,7 +78,8 @@ img {
 .site-content {
   max-width: 1280px;
   margin: 10px auto;
-  font-size: 14pt; }
+  font-size: 14pt;
+  min-height: 350px;}
 
 .article-preview {
   border-bottom: 4px solid #000; }

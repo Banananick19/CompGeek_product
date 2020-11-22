@@ -87,7 +87,7 @@ def home(request):
 
 def loginer(request):
     if request.user.is_authenticated:
-        messages.error('Вы уже вошли')
+        messages.error(request, 'Вы уже вошли')
         return redirect('home')
     context = {
         'form_title': 'Вход'
