@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,7 +10,6 @@ from django.db.models import Q
 from django.utils import timezone
 from CompGeek.settings import PAGINATION_ARTICLES, PAGINATION_COMMENTS
 
-from datetime import timedelta
 
 from .forms import *
 from .models import *
@@ -46,7 +44,7 @@ class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
             queryset = self.get_queryset()
         return get_object_or_404(queryset, pk=self.user_id)
 
-@counted
+
 def article(request, tag):
     article = get_object_or_404(Article, tag=tag)
 
@@ -239,31 +237,6 @@ def articles_by_categories(request, category_tag, secondary_category_tag):
         }
         return render(request, 'main/articles.html', context)
 
-def articles_by_views(request, time):
-    if not time in ['week', 'month', 'ever']:
-        response = render(request, 'main/404.html')
-        response.status_code = 404
-        return response
-    articles = False
-    if time == 'week':
-        articles = Article.objects.filter(date__gte=timezone.now() - timedelta(days=7))
-    elif time == 'month':
-        articles = Article.objects.filter(date__gte=timezone.now() - timedelta(days=30))
-    elif time == 'ever':
-        articles = Article.objects.all()
-
-    if articles:
-        articles.order_by('-views')
-        page = request.GET.get('page')
-        context = get_pag(articles, PAGINATION_ARTICLES, page)
-        context['title'] = 'Лучшее за ' + get_mean(time, {'week': 'неделю', 'month': 'месяц', 'ever': 'все время'})
-        return render(request, 'main/articles.html', context)
-    else:
-        context = {
-            'object_list': articles,
-            'title': 'Лучшее за ' + get_mean(time, {'week': 'неделю', 'month': 'месяц', 'ever': 'все время'})
-        }
-        return render(request, 'main/articles.html', context)
 
 @login_required
 def write_article(request):

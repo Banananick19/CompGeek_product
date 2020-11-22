@@ -17,10 +17,6 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
 
-
-
-
-
 class PrimaryCategory(models.Model):
     label = models.CharField(max_length=100, null=True, blank=True, verbose_name='название')
     tag = models.CharField(max_length=100, null=True, blank=True, verbose_name='тэг')
@@ -50,7 +46,6 @@ class Article(models.Model):
     avatar = models.ImageField(blank=True, upload_to='img/article_avatars', verbose_name='аватар')
     date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     author = models.ForeignKey('User', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Автор')
-    views = models.PositiveIntegerField(default=0, verbose_name='просмотры')
     label = models.CharField(max_length=100, null=True, blank=True, unique=True, verbose_name='Название')
     tag = models.CharField(max_length=100, null=True, blank=True, unique=True, verbose_name='Тэг')
     text = models.TextField(verbose_name='Тест')

@@ -14,7 +14,6 @@
         <img src="{{ article.author.email|gravatar_url:40 }}" height="40" width="40" class="rounded-circle d-inline-block">
     {% endif %} <span >{{ article.author.username }}</span></a><br>
       <h6 class="article-categories"><a href="{% url 'articles_by_category' article.primary_category.tag %}">{{ article.primary_category.label }}</a> | <a href="{% url 'articles_by_categories' article.primary_category.tag article.secondary_category.tag %}">{{ article.secondary_category.label }}</a></h6>
-    <city class="views">Просмотров: {{ article.views }}</city>
     {% autoescape off %}
         <div class="article-text">{{ article.text }}</div>
     {% endautoescape %}

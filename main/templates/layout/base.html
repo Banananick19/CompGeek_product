@@ -24,11 +24,6 @@
             <span class="search"><form action="{% url 'articles' %}"  method="GET" class="search-form form-group"><input type="text" name="pattern" class="form-control d-inline-block pattern"><input type='image' class='search-submit' width="40px" height="40px"  src="{% static 'img/site/search.svg' %}" /></form></span>
 
             <div class='navigation-list ml-2'>
-                <h3 class="text-light">Лучшее за ...</h3>
-                    <a href="{% url 'articles_by_views' 'week' %}" class="d-block">Неделю</a>
-                    <a href="{% url 'articles_by_views' 'month' %}" class="d-block">Месяц</a>
-                    <a href="{% url 'articles_by_views' 'ever' %}">Все время</a>
-                    <h3 class="text-light">Категории</h3>
                     {% for category in primary_categories %}
                         <a href="{% url 'articles_by_category' category.tag %}">{{ category.label }}</a>
                         <ul>
@@ -46,17 +41,6 @@
         </a>
 
         <nav class="navigation d-inline-block">
-            <div class="btn-group">
-                    <button class="btn btn-outline-primary">Лучшее за ..</button>
-                    <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="{% url 'articles_by_views' 'week' %}" class="dropdown-item">Неделю</a>
-                        <a href="{% url 'articles_by_views' 'month' %}" class="dropdown-item">Месяц</a><a
-                            href="{% url 'articles_by_views' 'ever' %}" class="dropdown-item">Все время</a>
-                    </div>
-                </div>
             {% for category in primary_categories %}
                 <div class="btn-group">
                     <a href="{% url 'articles_by_category' category.tag %}" class="btn btn-outline-primary">{{ category.label }}</a>

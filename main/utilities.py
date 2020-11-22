@@ -1,28 +1,4 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from functools import wraps
-from django.db.models import F
-from django.db import transaction
-from .models import Article
-
-
-
-def get_mean(expression, dictionary):
-    for key in dictionary:
-        if expression == key:
-            return dictionary[key]
-
-def counted(f):
-    @wraps(f)
-    def decorator(request, *args, **kwargs):
-        with transaction.atomic():
-            try:
-                article = Article.objects.get(tag=kwargs['tag'])
-                article.views = F('views') + 1
-                article.save()
-            except:
-                pass
-            return f(request, *args, **kwargs)
-    return decorator
 
 def transliterate(string):
     # Слоаврь с заменами
