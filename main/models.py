@@ -1,8 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.dispatch import receiver
+from CompGeek.settings import MEDIA_ROOT
+import os
 
 
 # Create your models here.
+
 
 
 class User(AbstractUser):
@@ -11,6 +15,10 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+
+
 
 
 class PrimaryCategory(models.Model):
@@ -69,5 +77,14 @@ class Comment(models.Model):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ['date']
+
+# singnals handlers
+
+@receiver(models.signals.pre_delete, sender=User, weak=False)
+def delete_related_resources(sender, instance, **kwargs):
+    if instance.avatar.name:
+        path = os.path.join(MEDIA_ROOT, instance.avatar.name)
+        if os.path.exists(path):
+            os.remove(path)
 
 

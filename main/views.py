@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -133,8 +134,7 @@ def logouter(request):
     return redirect('login')
 
 
-
-def sing_up(request):
+def sign_up(request):
     if request.user.is_authenticated:
         return redirect('home')
 
@@ -142,7 +142,7 @@ def sing_up(request):
         'form_title': 'Регистрация'
     }
     if request.method == 'POST':
-        form = RegisterUserForm(request.POST)
+        form = RegisterUserForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 form.clean()
