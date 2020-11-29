@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
 
     {% if article %}
-        <meta name='description' content='{{article.text}}, {{article.preview_text}}'>
+        <meta name='description' content='{{article.preview_text}}'>
         <meta name='keywords' content='{{ title }}, CompGeek, {% for category in primary_categories %}{{category.label}}, {% endfor %}, {{ article.label }}'>
         <meta name='author' content='{{ article.author.username }}'>
         {% else %}
