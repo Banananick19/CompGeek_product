@@ -6,7 +6,6 @@ let nav_mobile_list = $('.navigation-mobile .navigation-list');
 let nav = $('.navigation');
 
 button.click( function(e) {
-    console.log(e)
     nav_mobile.slideToggle()
 })
 
@@ -18,7 +17,6 @@ document.addEventListener('DOMContentLoaded', check_width)
 
 function check_width() {
     if ( window.innerWidth < point_size ) {
-        console.log(window.innerWidth)
         button.removeClass('d-none');
         nav.removeClass('d-inline-block');
         nav.addClass('d-none');
